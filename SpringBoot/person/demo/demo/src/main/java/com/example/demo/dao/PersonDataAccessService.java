@@ -21,22 +21,25 @@ public class PersonDataAccessService implements PersonDao {
 
     @Override
     public int deletePersonById(final UUID id) {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+        String sql = "" +
+        "DELETE FROM person " +
+        "WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
+            }
 
     @Override
     public int insertPerson(final UUID id, final Person person) {
-        // TODO Auto-generated method stub
-        return 0;
+
+        String sql = "INSERT INTO person (id,name) VALUES (? , ? )";
+        return jdbcTemplate.update(sql, id , person.getName());
     }
 
     @Override
     public List<Person> selectAllPeople() {
-         String sql = "SELECT id, name FROM person";
+         final String sql = "SELECT id, name FROM person";
          return jdbcTemplate.query(sql, (resultSet, i) -> {
-             UUID id = UUID.fromString(resultSet.getString("id"));
-             String name = resultSet.getString("name");
+             final UUID id = UUID.fromString(resultSet.getString("id"));
+             final String name = resultSet.getString("name");
             return new Person(id, name);
         });
 
@@ -44,11 +47,11 @@ public class PersonDataAccessService implements PersonDao {
 
     @Override
     public Optional<Person> selectPersonById(final UUID id) {
-        String sql = "SELECT id, name FROM person WHERE id = ?";
-         Person person = jdbcTemplate.queryForObject(sql, new Object[]{id},
+        final String sql = "SELECT id, name FROM person WHERE id = ?";
+         final Person person = jdbcTemplate.queryForObject(sql, new Object[]{id},
             (resultSet, i) -> {
-             UUID personId = UUID.fromString(resultSet.getString("id"));
-             String name = resultSet.getString("name");
+             final UUID personId = UUID.fromString(resultSet.getString("id"));
+             final String name = resultSet.getString("name");
             return new Person(personId, name);
         });
         return Optional.ofNullable(person);
@@ -56,8 +59,13 @@ public class PersonDataAccessService implements PersonDao {
 
     @Override
     public int updatePersonById(final UUID id, final Person person) {
-        // TODO Auto-generated method stub
-        return 0;
+     
+        String sql = "" +
+        "UPDATE person " +
+        "SET name = ? " +
+        "WHERE id = ?";
+        return jdbcTemplate.update(sql,  person.getName(),id);
+        
     }
 
    
